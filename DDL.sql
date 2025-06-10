@@ -73,7 +73,7 @@ drop table if exists tra_trabalho cascade;
 create table tra_trabalho (
   tra_id bigint generated always as identity,
   tra_titulo varchar(100) not null unique,
-  tra_data_hora_entrega timestamp not null,
+  tra_data_hora_entrega timestamp,
   tra_descricao varchar(200),
   tra_grupo varchar(20) not null,
   tra_nota int,
@@ -106,7 +106,17 @@ create table con_conteudo (
   primary key (con_id)
 );
 
-
+drop table if exists ape_apendice cascade;
+create table ape_apendice (
+  ape_id bigint generated always as identity,
+  ape_texto varchar(200) not null,
+  ape_data_hora timestamp,
+  ape_data_hora_aprovacao timestamp,
+  ape_tra_id bigint not null,
+  foreign key (ape_tra_id) references tra_trabalho(tra_id),
+  unique(ape_texto, ape_tra_id),
+  primary key (ape_id)
+);
 
 insert into usr_usuario (usr_nome, usr_senha) 
   values ('admin', '$2a$10$i3.Z8Yv1Fwl0I5SNjdCGkOTRGQjGvHjh/gMZhdc3e7LIovAklqM6C');
@@ -127,13 +137,16 @@ insert into ant_anotacao(ant_texto, ant_data_hora, ant_usr_id)
   values('Meu novo projeto', '2023-08-01 19:10', 1);
 insert into tra_trabalho (tra_titulo, tra_data_hora_entrega, tra_descricao, tra_grupo, tra_nota, tra_justificativa) 
   values ('TG', '2025-05-10 10:00', 'Trabalho de graduação', 'Alpha', 6, 'Bom, mas falta conteúdo'),
-         ('Guia de instalação', '2025-06-01 17:00', 'Guia para instalação do software', 'Beta', null, 'Incompleto');
+         ('Guia de instalação', null, 'Guia para instalação do software', 'Beta', null, 'Incompleto');
 insert into rev_revisao (rev_comentario, rev_data_hora, rev_gravidade, rev_tra_id)
   values ('O título precisa melhorar', '2025-05-10 11:20', null, 1),
          ('Use um corretor automárico!', '2025-05-12 17:00', 3, 1);
 insert into con_conteudo (con_texto, con_data_hora_criacao, con_data_hora_publicacao, con_tra_id)
   values ('Aqui vai uma introdução', '2025-05-10 10:02', '2025-05-10 10:30', 1),
          ('Meu trabalho inteiro é isso!', '2025-06-01 17:02', null, 2);
+insert into ape_apendice (ape_texto, ape_data_hora, ape_data_hora_aprovacao, ape_tra_id)
+  values ('Apendice A', '2025-05-09 10:05', '2025-05-09 10:40', 1),
+         ('Apendice B', '2025-06-01 17:05', null, 2);
 
 --Comente essa linha se o usuario ja existir
 create user spring with password 'pass123';

@@ -46,6 +46,18 @@ create table des_desejo (
   primary key (des_id)
 );
 
+drop table if exists pre_preco cascade;
+create table pre_preco (
+  pre_id bigint generated always as identity,
+  pre_valor float not null,
+  pre_motivo varchar(100),
+  pre_data_hora timestamp not null,
+  pre_pro_id bigint not null,
+  foreign key (pre_pro_id) references pro_produto(pro_id),
+  unique(pre_data_hora, pre_pro_id),
+  primary key (pre_id)
+);
+
 drop table if exists cot_cotacao cascade;
 create table cot_cotacao (
   cot_id bigint generated always as identity,
@@ -130,6 +142,10 @@ insert into pro_produto (pro_descricao, pro_data_hora_anuncio, pro_data_hora_lan
 insert into des_desejo (des_lembrete, des_data_hora_inclusao, des_nivel_interesse, des_pro_id)
   values ('Gostaria muito de ter esse smartphone', '2025-01-02 10:00', 5, 1),
          ('Preciso de um laptop novo', '2025-03-02 12:00', 4, 2);
+insert into pre_preco (pre_valor, pre_motivo, pre_data_hora, pre_pro_id)
+  values (2999.99, 'Preço inicial', '2025-01-03 10:00', 1),
+         (3499.99, null, '2025-01-10 10:00', 1),
+         (4999.99, 'Preço promocional', '2025-03-03 12:00', 2);
 insert into cot_cotacao (cot_data_hora, cot_valor, cot_comentario, cot_pro_id)
   values ('2025-01-03 10:00', 2999.99, 'Garantia de 2 anos', 1),
          ('2025-03-03 12:00', 4999.99, 'Inclui acessórios', 2);
